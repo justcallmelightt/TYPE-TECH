@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="none" role="img" aria-labelledby="title">
+  <title id="title">TYPE / TECH</title>
+  <g stroke="#111111" stroke-linecap="round">
+    <path d="M5 12h9M5 20h11M5 28h7" stroke-width="2.4"/>
+    <path d="m20.5 7.5-3 25" stroke="#8A8F95" stroke-width="1.8"/>
+  </g>
+  <rect x="24" y="10" width="5.5" height="5.5" rx="1.2" fill="#111111"/>
+  <rect x="32" y="10" width="4" height="5.5" rx="1" fill="#111111"/>
+  <rect x="24" y="18" width="5.5" height="5.5" rx="1.2" fill="#111111"/>
+  <rect x="32" y="18" width="4" height="5.5" rx="1" fill="#111111"/>
+  <rect x="24" y="26" width="5.5" height="5.5" rx="1.2" fill="#111111"/>
+  <rect x="32" y="26" width="4" height="5.5" rx="1" fill="#111111"/>
+</svg>
