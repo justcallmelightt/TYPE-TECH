@@ -146,13 +146,18 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ink); outline-o
 .result h1 span { font-weight: inherit; }
 .result-lead { margin-top: 22px; color: var(--soft); font-size: clamp(17px, 1.75vw, 23px); font-weight: 520; line-height: 1.5; letter-spacing: -.025em; word-break: keep-all; }
 .result-detail { display: flex; flex-direction: column; padding: clamp(38px, 5vw, 72px) 0 clamp(42px, 5vw, 66px) clamp(34px, 5vw, 70px); border-left: 1px solid var(--line); }
-.detail-number { color: var(--quiet); font-size: 11px; font-weight: 650; letter-spacing: .08em; }
-.result-detail h2 { margin-top: 0; font-size: clamp(30px, 2.8vw, 42px); font-weight: 660; line-height: 1.2; letter-spacing: -.055em; }
-.result-detail > p { margin-top: 24px; color: var(--soft); font-size: 16px; line-height: 1.85; word-break: keep-all; text-wrap: pretty; }
-.result-detail .tag-row { margin-top: 24px; }
-.tech-explainer { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--line); }
-.tech-explainer h3 { margin-top: 0; color: var(--type-color); font-size: clamp(19px, 1.8vw, 24px); font-weight: 640; line-height: 1.3; letter-spacing: -.04em; }
-.tech-explainer > p { margin-top: 10px; color: var(--soft); font-size: 14px; line-height: 1.75; word-break: keep-all; text-wrap: pretty; }
+.detail-number { color: var(--quiet); font-size: 11px; font-weight: 650; letter-spacing: .02em; }
+.result-detail h2 { margin-top: 14px; font-size: clamp(25px, 2.35vw, 35px); font-weight: 670; line-height: 1.28; letter-spacing: -.045em; word-break: keep-all; text-wrap: pretty; }
+.result-detail > .result-reason { margin-top: 16px; color: var(--soft); font-size: 15px; line-height: 1.75; word-break: keep-all; text-wrap: pretty; }
+.result-detail .tag-row { margin-top: 20px; }
+.tech-explainer { margin-top: 24px; border-top: 1px solid var(--line); }
+.tech-explainer summary { min-height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; color: var(--type-color); font-size: 16px; font-weight: 640; line-height: 1.4; letter-spacing: -.025em; cursor: pointer; list-style: none; }
+.tech-explainer summary::-webkit-details-marker { display: none; }
+.tech-explainer summary::marker { content: ''; }
+.tech-explainer summary:focus-visible { outline: 2px solid var(--type-color); outline-offset: 4px; }
+.tech-explainer-icon { flex: none; color: var(--quiet); font-size: 22px; font-weight: 400; transition: transform .22s var(--ease); }
+.tech-explainer[open] .tech-explainer-icon { transform: rotate(45deg); }
+.tech-explainer > p { margin: 0 0 18px; color: var(--soft); font-size: 14px; line-height: 1.75; word-break: keep-all; text-wrap: pretty; }
 .result-note { max-width: 100%; margin-top: 10px; color: var(--quiet); font-size: 12px; line-height: 1.45; word-break: keep-all; }
 .result-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 18px 24px; padding-top: 24px; }
 .secondary-button { min-height: 44px; padding: 0; border: 0; border-bottom: 1px solid var(--ink); border-radius: 0; background: transparent; color: var(--ink); font-size: 13px; font-weight: 640; transition: opacity .18s ease, transform .18s var(--ease); }
@@ -257,8 +262,8 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ink); outline-o
   .result-art img { width: 84px; height: 84px; }
   .result h1 { font-size: clamp(48px, 12vw, 64px); }
   .result-lead { font-size: 17px; }
-  .result-detail > p { font-size: 15px; }
-  .tech-explainer { margin-top: 22px; padding-top: 18px; }
+  .result-detail > .result-reason { font-size: 15px; }
+  .tech-explainer { margin-top: 22px; }
   .tech-explainer > p { font-size: 13px; }
   .result-actions { align-items: flex-start; flex-direction: column; gap: 12px; }
   .result-actions .primary-button { width: 100%; }

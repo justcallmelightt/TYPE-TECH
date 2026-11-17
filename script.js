@@ -8,6 +8,21 @@ const TYPES = {
   sql: { name: 'SQL', accent: '#0F766E', pale: '#e5f2f0', logo: 'sql', lead: '흩어진 정보에서 핵심을 찾아내는 분석가', reason: '복잡한 이야기를 들으면 먼저 정보를 나누고, 무엇이 중요한지 차근차근 살펴봅니다. 서로 다른 조각 사이에서 반복되는 흐름과 답을 찾아내죠. 데이터를 묻고 정리해 필요한 결과를 찾는 SQL처럼, 당신은 중요한 단서를 놓치지 않는 분석가예요.', description: '데이터베이스의 정보를 조회하고 정리하는 데 쓰는 언어예요. 조건에 맞는 데이터를 찾거나 새 정보를 추가·수정할 수 있어요.', tags: ['분석력', '정리력', '핵심 파악'] }
 };
 
+const TYPE_INSIGHTS = {
+  flutter: '새로운 자리에서도 사람들의 리듬을 금세 맞춰요.',
+  javascript: '떠오른 아이디어를 오래 묵히지 않고 바로 움직여요.',
+  typescript: '작은 약속을 지키고, 함께 이해할 기준을 세워요.',
+  python: '낯선 주제도 자기만의 속도로 쉽게 풀어내요.',
+  rust: '작은 위험을 먼저 살피고, 맡은 일은 끝까지 지켜요.',
+  css: '남들이 놓친 작은 디테일로 평범한 순간을 바꿔요.',
+  sql: '복잡한 이야기에서 중요한 단서를 먼저 찾아내요.'
+};
+
+function supportingReason(reason) {
+  const firstSentenceEnd = reason.indexOf('. ');
+  return firstSentenceEnd === -1 ? reason : reason.slice(firstSentenceEnd + 2);
+}
+
 const QUESTIONS = [
   { title: '새로운 모임에 처음 갔을 때, 나는?', answers: [
     ['먼저 말을 걸며 분위기를 연다', 'javascript'], ['사람들의 대화를 듣고 자연스럽게 섞인다', 'flutter'], ['모임의 흐름을 살피며 천천히 적응한다', 'rust'], ['눈에 띄는 작은 디테일에 관심이 간다', 'css']
@@ -238,7 +253,7 @@ function renderResult() {
   app.innerHTML = `<section class="result type--${state.result}" style="--type-color:${type.accent}" aria-labelledby="result-title">
     <div class="result-top"><p class="eyebrow"><span class="eyebrow-number">03 / 03</span> 당신의 유형</p><span class="result-seal">TYPE / TECH RESULT</span></div>
     <div class="result-layout"><div class="result-identity"><div class="result-art" aria-hidden="true"><img src="assets/logos/${type.logo}.svg" alt="" width="116" height="116"></div><h1 id="result-title" tabindex="-1">당신은<br><span class="type-name">${type.name}</span> 유형입니다.</h1><p class="result-lead">${type.lead}</p><p class="result-note">재미로 보는 유형 해석이며, 사람을 하나의 유형으로 단정하지 않아요.</p></div>
-    <div class="result-detail"><h2>왜 ${type.name}<br>유형일까요?</h2><p>${type.reason}</p><div class="tag-row">${type.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div><section class="tech-explainer" aria-labelledby="tech-explainer-title"><h3 id="tech-explainer-title">${type.name}는 무엇인가요?</h3><p>${type.description}</p></section></div></div>
+    <div class="result-detail"><p class="detail-number">당신의 방식</p><h2 class="result-insight">${TYPE_INSIGHTS[state.result]}</h2><p class="result-reason">${supportingReason(type.reason)}</p><div class="tag-row">${type.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div><details class="tech-explainer"><summary><span>${type.name}는 어떤 기술인가요?</span><span class="tech-explainer-icon" aria-hidden="true">+</span></summary><p>${type.description}</p></details></div></div>
     <div class="result-actions"><button class="primary-button" id="share" type="button"><span>결과 공유하기</span><span class="button-arrow" aria-hidden="true">↗</span></button><button class="secondary-button" id="all-types" type="button">다른 유형 보기 <span aria-hidden="true">→</span></button><button class="secondary-button" id="restart" type="button">다시 해보기 <span aria-hidden="true">↺</span></button></div><p class="share-note" id="share-note" role="status"></p>
   </section>`;
   initializeResultArtReveal();
