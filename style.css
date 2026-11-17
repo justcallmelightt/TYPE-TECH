@@ -92,7 +92,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ink); outline-o
 .progress-segment::after { content: ''; display: block; width: 100%; height: 100%; background: var(--ink); transform: scaleX(0); transform-origin: left; transition: transform .44s var(--ease); }
 .progress-segment.is-filled::after { transform: scaleX(1); }
 .quiz-body { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: clamp(42px, 8vw, 130px); padding-top: clamp(72px, 10vw, 146px); }
-.question-label { display: flex; align-items: center; gap: 6px; margin-bottom: 26px; color: var(--quiet); font-size: 11px; font-weight: 650; letter-spacing: .1em; }
+.question-label { display: flex; align-items: center; gap: 6px; margin-bottom: 26px; color: var(--quiet); font-size: 11px; font-weight: 650; letter-spacing: .025em; }
 .quiz h1 { max-width: 600px; font-size: clamp(42px, 4.9vw, 72px); font-weight: 660; line-height: 1.18; letter-spacing: -.066em; word-break: keep-all; text-wrap: balance; }
 .question-help { margin-top: 28px; color: var(--soft); font-size: 15px; line-height: 1.6; }
 .answer-block { min-width: 0; }

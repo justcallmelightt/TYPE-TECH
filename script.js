@@ -171,7 +171,7 @@ function renderQuiz() {
   app.innerHTML = `<section class="quiz" aria-labelledby="question-title">
     <div class="quiz-top"><span class="quiz-top-label">나를 닮은 기술 찾기</span><span class="question-count">${rollingNumber(state.index + 1)}<span class="count-denominator" aria-hidden="true"> / ${String(QUESTIONS.length).padStart(2, '0')}</span><span class="sr-only" id="question-counter-announcement" aria-live="polite">${state.index + 1} / ${QUESTIONS.length}</span></span></div>
     <div class="progress" role="progressbar" aria-label="검사 진행률" aria-valuenow="${state.index + 1}" aria-valuemin="1" aria-valuemax="${QUESTIONS.length}">${QUESTIONS.map((_, index) => `<span class="progress-segment ${index <= state.index ? 'is-filled' : ''}"></span>`).join('')}</div>
-    <div class="quiz-body"><div class="question-block"><p class="question-label">QUESTION ${rollingNumber(state.index + 1)}</p><h1 id="question-title" tabindex="-1">${escapeHtml(question.title)}</h1><p class="question-help">지금의 나에게 가장 가까운 답을 골라주세요.</p></div>
+    <div class="quiz-body"><div class="question-block"><p class="question-label">Ques ${rollingNumber(state.index + 1)}</p><h1 id="question-title" tabindex="-1">${escapeHtml(question.title)}</h1><p class="question-help">지금의 나에게 가장 가까운 답을 골라주세요.</p></div>
     <div class="answer-block"><div class="answers">${question.answers.map(([label], answerIndex) => `<button class="answer ${state.answers[state.index] === answerIndex ? 'selected' : ''}" type="button" data-answer="${answerIndex}" aria-pressed="${state.answers[state.index] === answerIndex}"><span class="answer-index">${String.fromCharCode(65 + answerIndex)}</span><span class="answer-text">${escapeHtml(label)}</span><span class="answer-arrow" aria-hidden="true">↗</span></button>`).join('')}</div><div class="quiz-nav"><button class="text-button" id="back" type="button">← ${state.index === 0 ? '이전 화면' : '이전 질문'}</button><span class="quiz-hint">답을 고르면 다음으로 넘어갑니다</span></div></div></div>
   </section>`;
   document.querySelectorAll('[data-answer]').forEach(button => button.addEventListener('click', () => {
@@ -245,9 +245,17 @@ function renderResult() {
   document.querySelector('#all-types').addEventListener('click', () => { state.typesReturn = 'result'; state.screen = 'types'; render(); });
   document.querySelector('#restart').addEventListener('click', () => { state.screen = 'intro'; state.index = 0; state.answers.fill(null); state.result = null; render(); });
   document.querySelector('#share').addEventListener('click', async () => {
-    const publicUrl = /^https?:$/.test(location.protocol) ? location.href : '';
-    const shareData = { title: `나는 ${type.name} 유형!`, text: `당신은 ${type.name} 유형입니다! ${type.lead}`, ...(publicUrl ? { url: publicUrl } : {}) };
-    const shareText = [shareData.text, publicUrl].filter(Boolean).join('\n');
+    const resultUrl = /^https?:$/.test(location.protocol) ? new URL(location.href) : null;
+    if (resultUrl) {
+      resultUrl.search = '';
+      resultUrl.hash = '';
+      resultUrl.searchParams.set('result', state.result);
+    }
+    const publicUrl = resultUrl?.toString() ?? '';
+    const shareTitle = `나는 ${type.name} 유형이야!`;
+    const shareDescription = `${type.lead}.`;
+    const shareData = { title: shareTitle, text: shareDescription, ...(publicUrl ? { url: publicUrl } : {}) };
+    const shareText = [[shareTitle, shareDescription].join(' '), publicUrl].filter(Boolean).join('\n');
     const note = document.querySelector('#share-note');
     try {
       if (navigator.share) await navigator.share(shareData);
@@ -264,7 +272,10 @@ function render(recordHistory = true, focusHeading = true) {
   }
   if (recordHistory) {
     state.depth += 1;
-    try { window.history.pushState({ typeTech: snapshot() }, ''); }
+    const nextUrl = state.screen !== 'result' && location.protocol !== 'file:'
+      ? (() => { const url = new URL(location.href); url.searchParams.delete('result'); return `${url.pathname}${url.search}${url.hash}`; })()
+      : undefined;
+    try { window.history.pushState({ typeTech: snapshot() }, '', nextUrl); }
     catch { state.depth -= 1; }
   }
   const sameQuiz = state.screen === 'quiz' && renderedScreen === 'quiz';
@@ -280,7 +291,13 @@ function render(recordHistory = true, focusHeading = true) {
   if (focusHeading) document.querySelector('main h1')?.focus({ preventScroll: true });
 }
 
-if (!restoreSnapshot(window.history.state?.typeTech)) {
+const sharedResult = new URLSearchParams(window.location.search).get('result');
+if (Object.hasOwn(TYPES, sharedResult)) {
+  state.screen = 'result';
+  state.result = sharedResult;
+  state.depth = 0;
+  try { window.history.replaceState({ typeTech: snapshot() }, ''); } catch { /* Local browsing can disable history state. */ }
+} else if (!restoreSnapshot(window.history.state?.typeTech)) {
   try { window.history.replaceState({ typeTech: snapshot() }, ''); } catch { /* Local browsing can disable history state. */ }
 }
 window.addEventListener('popstate', event => {
