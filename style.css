@@ -172,9 +172,16 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ink); outline-o
 @keyframes tech-close-spin-in { from { transform: rotate(45deg); } to { transform: rotate(405deg); } }
 @keyframes tech-close-spin-out { from { transform: rotate(45deg); } to { transform: rotate(405deg); } }
 .tech-explainer > p { margin: 0 0 18px; color: var(--soft); font-size: 14px; line-height: 1.75; word-break: keep-all; text-wrap: pretty; }
-.tech-example { margin: 2px 0 14px; padding: 16px; overflow-x: auto; background: #f5f6f7; color: var(--ink); font-size: 12px; line-height: 1.65; text-align: left; }
+.tech-example { margin: 2px 0 14px; padding: 16px; overflow-x: auto; background: #1b1d20; color: #d9dde5; font-size: 12px; line-height: 1.65; text-align: left; }
 .tech-example-label { margin: 0 0 10px !important; color: var(--quiet) !important; font-size: 12px !important; font-weight: 600; }
 .tech-example code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.code-token--keyword { color: #c792ea; }
+.code-token--type { color: #82aaff; }
+.code-token--function { color: #ffcb6b; }
+.code-token--string { color: #f7a3bd; }
+.code-token--number { color: #f6c177; }
+.code-token--selector { color: #8bd5ca; }
+.code-token--property { color: #82aaff; }
 .result-note { max-width: 100%; margin-top: 30px; color: var(--quiet); font-size: 12px; line-height: 1.45; word-break: keep-all; }
 .result-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 18px 24px; padding-top: 24px; }
 .secondary-button { min-height: 44px; padding: 0; border: 0; border-bottom: 1px solid var(--ink); border-radius: 0; background: transparent; color: var(--ink); font-size: 13px; font-weight: 640; transition: opacity .18s ease, transform .18s var(--ease); }

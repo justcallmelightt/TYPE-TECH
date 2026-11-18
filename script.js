@@ -146,6 +146,33 @@ function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 }
 
+function highlightExample(code, typeKey) {
+  const keywords = new Set(['const', 'for', 'in', 'let', 'SELECT', 'FROM', 'WHERE', 'TRUE']);
+  const types = new Set(['number', 'i32']);
+  const functions = new Set(['Text', 'print', 'println', 'log']);
+  const tokens = /"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\b\d+(?:\.\d+)?\b|\b[A-Za-z_][A-Za-z_0-9]*\b|[^\w\s]/g;
+  let highlighted = '';
+  let position = 0;
+
+  for (const match of code.matchAll(tokens)) {
+    const token = match[0];
+    highlighted += escapeHtml(code.slice(position, match.index));
+    let kind = '';
+    if (/^["']/.test(token)) kind = 'string';
+    else if (/^\d/.test(token)) kind = 'number';
+    else if (keywords.has(token)) kind = 'keyword';
+    else if (types.has(token)) kind = 'type';
+    else if (functions.has(token)) kind = 'function';
+    else if (typeKey === 'css' && code[match.index - 1] === '.') kind = 'selector';
+    else if (typeKey === 'css' && token === 'color') kind = 'property';
+    else if (typeKey === 'css' && token === 'rebeccapurple') kind = 'string';
+    highlighted += kind ? `<span class="code-token code-token--${kind}">${escapeHtml(token)}</span>` : escapeHtml(token);
+    position = match.index + token.length;
+  }
+
+  return highlighted + escapeHtml(code.slice(position));
+}
+
 function rollingNumber(value) {
   return `<span class="rolling-number" aria-hidden="true">${[Math.floor(value / 10), value % 10].map((digit, place) => `<span class="rolling-window"><span class="rolling-track" data-place="${place}" style="transform:translateY(-${digit}em)">${Array.from({ length: 10 }, (_, number) => `<span>${number}</span>`).join('')}</span></span>`).join('')}</span>`;
 }
@@ -265,7 +292,7 @@ function renderResult() {
   app.innerHTML = `<section class="result type--${state.result}" style="--type-color:${type.accent}" aria-labelledby="result-title">
     <div class="result-top"><p class="eyebrow"><span class="eyebrow-number">03 / 03</span> 당신의 유형</p><span class="result-seal">TYPE / TECH RESULT</span></div>
     <div class="result-layout"><div class="result-identity"><div class="result-art" aria-hidden="true"><img src="assets/logos/${type.logo}.svg" alt="" width="116" height="116"></div><h1 id="result-title" tabindex="-1">당신은<br><span class="type-name">${type.name}</span> 유형입니다.</h1><p class="result-lead">${type.lead}</p><div class="result-story"><p class="result-interpretation">${TYPE_INSIGHTS[state.result]} ${supportingReason(type.reason)}</p><div class="tag-row">${type.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div></div><p class="result-note">재미로 보는 유형 해석이며, 사람을 하나의 유형으로 단정하지 않아요.</p></div>
-    <div class="result-detail"><details class="tech-explainer"><summary><span>${type.name}${subjectParticle} 어떤 기술인가요?</span><span class="tech-explainer-icon" aria-hidden="true"></span></summary><p>${type.description}</p></details><details class="tech-explainer"><summary><span>${type.name}${subjectParticle} 어디에 쓰이나요?</span><span class="tech-explainer-icon" aria-hidden="true"></span></summary><p>${learning.use}</p></details><details class="tech-explainer"><summary><span>${type.name}${subjectParticle} 어떻게 쓰나요?</span><span class="tech-explainer-icon" aria-hidden="true"></span></summary><p class="tech-example-label">${learning.concept}</p><pre class="tech-example"><code>${escapeHtml(learning.example)}</code></pre><p>${learning.outcome}</p></details></div></div>
+    <div class="result-detail"><details class="tech-explainer"><summary><span>${type.name}${subjectParticle} 어떤 기술인가요?</span><span class="tech-explainer-icon" aria-hidden="true"></span></summary><p>${type.description}</p></details><details class="tech-explainer"><summary><span>${type.name}${subjectParticle} 어디에 쓰이나요?</span><span class="tech-explainer-icon" aria-hidden="true"></span></summary><p>${learning.use}</p></details><details class="tech-explainer"><summary><span>${type.name}${subjectParticle} 어떻게 쓰나요?</span><span class="tech-explainer-icon" aria-hidden="true"></span></summary><p class="tech-example-label">${learning.concept}</p><pre class="tech-example"><code>${highlightExample(learning.example, state.result)}</code></pre><p>${learning.outcome}</p></details></div></div>
     <div class="result-actions"><button class="primary-button" id="share" type="button"><span>결과 공유하기</span><span class="button-arrow" aria-hidden="true">↗</span></button><button class="secondary-button" id="all-types" type="button">다른 유형 보기 <span aria-hidden="true">→</span></button><button class="secondary-button" id="restart" type="button">다시 해보기 <span aria-hidden="true">↺</span></button></div><p class="share-note" id="share-note" role="status"></p>
   </section>`;
   initializeResultArtReveal();
