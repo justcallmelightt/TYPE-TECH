@@ -18,6 +18,16 @@ const TYPE_INSIGHTS = {
   sql: '복잡한 이야기에서 중요한 단서를 먼저 찾아내요.'
 };
 
+const TYPE_LEARNING = {
+  flutter: { use: '하나의 코드로 휴대전화와 웹에서 쓸 앱을 만들 때 사용해요. 화면을 작은 위젯으로 조립하는 방식이 핵심이에요.', concept: '위젯', example: "Text('안녕, Flutter!')", outcome: 'Text 위젯이 화면에 “안녕, Flutter!”라는 글자를 보여줘요.' },
+  javascript: { use: '버튼을 눌렀을 때 화면이 바뀌거나, 입력에 맞춰 내용을 보여주는 웹 기능에 쓰여요.', concept: '변수', example: 'const name = "JavaScript";\nconsole.log(name);', outcome: 'name에 저장한 JavaScript가 콘솔에 출력돼요.' },
+  typescript: { use: '여러 사람이 함께 만드는 웹 서비스에서 값의 종류를 미리 정해 실수를 줄일 때 유용해요.', concept: '타입', example: 'const count: number = 3;\nconsole.log(count);', outcome: 'count는 숫자라는 약속을 갖고, 실행하면 3이 출력돼요.' },
+  python: { use: '반복되는 일을 자동화하거나 데이터를 정리하고 분석할 때 자주 사용해요.', concept: '반복문', example: 'for name in ["CSS", "SQL"]:\n    print(name)', outcome: 'CSS와 SQL이 차례로 한 줄씩 출력돼요.' },
+  rust: { use: '빠른 속도와 메모리 안전성이 중요한 개발 도구나 시스템 프로그램을 만들 때 사용해요.', concept: '변수와 타입', example: 'let count: i32 = 3;\nprintln!("{count}");', outcome: 'count를 정수로 선언하고 3을 출력해요.' },
+  css: { use: '웹페이지의 색, 글꼴, 여백과 화면 크기에 따른 배치를 꾸밀 때 사용해요.', concept: '선택자', example: '.card {\n  color: rebeccapurple;\n}', outcome: 'card 클래스를 가진 요소의 글자색이 보라색으로 바뀌어요.' },
+  sql: { use: '쇼핑몰의 상품이나 도서관의 책처럼 저장된 데이터 중 필요한 항목을 찾을 때 사용해요.', concept: '조건 조회', example: 'SELECT name\nFROM books\nWHERE available = TRUE;', outcome: '대출 가능한 책의 이름만 조회해요.' }
+};
+
 function supportingReason(reason) {
   const firstSentenceEnd = reason.indexOf('. ');
   return firstSentenceEnd === -1 ? reason : reason.slice(firstSentenceEnd + 2);
@@ -250,16 +260,19 @@ function calculateResult() {
 
 function renderResult() {
   const type = TYPES[state.result];
+  const learning = TYPE_LEARNING[state.result];
+  const subjectParticle = ['python', 'sql'].includes(state.result) ? '은' : '는';
   app.innerHTML = `<section class="result type--${state.result}" style="--type-color:${type.accent}" aria-labelledby="result-title">
     <div class="result-top"><p class="eyebrow"><span class="eyebrow-number">03 / 03</span> 당신의 유형</p><span class="result-seal">TYPE / TECH RESULT</span></div>
     <div class="result-layout"><div class="result-identity"><div class="result-art" aria-hidden="true"><img src="assets/logos/${type.logo}.svg" alt="" width="116" height="116"></div><h1 id="result-title" tabindex="-1">당신은<br><span class="type-name">${type.name}</span> 유형입니다.</h1><p class="result-lead">${type.lead}</p><div class="result-story"><p class="result-interpretation">${TYPE_INSIGHTS[state.result]} ${supportingReason(type.reason)}</p><div class="tag-row">${type.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div></div><p class="result-note">재미로 보는 유형 해석이며, 사람을 하나의 유형으로 단정하지 않아요.</p></div>
-    <div class="result-detail"><details class="tech-explainer"><summary><span>${type.name}는 어떤 기술인가요?</span><span class="tech-explainer-icon" aria-hidden="true"></span></summary><p>${type.description}</p></details></div></div>
+    <div class="result-detail"><details class="tech-explainer"><summary><span>${type.name}${subjectParticle} 어떤 기술인가요?</span><span class="tech-explainer-icon" aria-hidden="true"></span></summary><p>${type.description}</p></details><details class="tech-explainer"><summary><span>${type.name}${subjectParticle} 어디에 쓰이나요?</span><span class="tech-explainer-icon" aria-hidden="true"></span></summary><p>${learning.use}</p></details><details class="tech-explainer"><summary><span>${type.name}${subjectParticle} 어떻게 쓰나요?</span><span class="tech-explainer-icon" aria-hidden="true"></span></summary><p class="tech-example-label">${learning.concept}</p><pre class="tech-example"><code>${escapeHtml(learning.example)}</code></pre><p>${learning.outcome}</p></details></div></div>
     <div class="result-actions"><button class="primary-button" id="share" type="button"><span>결과 공유하기</span><span class="button-arrow" aria-hidden="true">↗</span></button><button class="secondary-button" id="all-types" type="button">다른 유형 보기 <span aria-hidden="true">→</span></button><button class="secondary-button" id="restart" type="button">다시 해보기 <span aria-hidden="true">↺</span></button></div><p class="share-note" id="share-note" role="status"></p>
   </section>`;
   initializeResultArtReveal();
-  const closeIcon = app.querySelector('.tech-explainer-icon');
-  closeIcon.addEventListener('pointerenter', () => closeIcon.classList.remove('is-leaving'));
-  closeIcon.addEventListener('pointerleave', () => { if (closeIcon.closest('details').open) closeIcon.classList.add('is-leaving'); });
+  app.querySelectorAll('.tech-explainer-icon').forEach(closeIcon => {
+    closeIcon.addEventListener('pointerenter', () => closeIcon.classList.remove('is-leaving'));
+    closeIcon.addEventListener('pointerleave', () => { if (closeIcon.closest('details').open) closeIcon.classList.add('is-leaving'); });
+  });
   document.querySelector('#all-types').addEventListener('click', () => { state.typesReturn = 'result'; state.screen = 'types'; render(); });
   document.querySelector('#restart').addEventListener('click', () => { state.screen = 'intro'; state.index = 0; state.answers.fill(null); state.result = null; render(); });
   document.querySelector('#share').addEventListener('click', async () => {
